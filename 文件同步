@@ -1,0 +1,26 @@
+#####################################################################
+# 将文件同步到ETL调度系统
+# 参数：./file_2_etl.sh {原文件路径和名称} {归属的数据仓库层级}
+# 例子：./file_2_etl.sh /tmp/qiujiejing/test.txt fdm
+#####################################################################
+
+#!/bin/bash
+des_dir="/home/jd_ad/task/edw/etl/"${2}"/bin/"
+src_file=${1}
+des_file=${des_dir}`basename ${1}`
+
+echo "des_dir:"${des_dir}
+echo "src_file:"${src_file}
+echo "des_file:"${des_file}
+
+dos2unix ${src_file}
+
+grep -r -I -l $'^\xEF\xBB\xBF' ${src_file} | xargs sed -i 's/^\xEF\xBB\xBF//g'
+
+rm ${des_file}
+
+cp ${src_file} ${des_dir}
+
+chmod 755 ${des_file}
+
+exit
